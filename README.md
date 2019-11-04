@@ -220,20 +220,61 @@ e. `message` should return a unique message for each animal when talk is called.
 f. Put an instance of each of your classes in an array.
 
 g. Iterate over the array and have them print their `message` property
-
+## Answer
+```swift
+protocol Communication {
+    var message: String { get }
+}
+class Cow: Communication, CustomStringConvertible {
+    var description: String {
+        return message
+    }
+    var message: String {
+        return "Moo"
+    }
+}
+class Dog: Communication, CustomStringConvertible {
+    var description: String {
+        return message
+    }
+    var message: String {
+        return "Ruff"
+    }
+}
+class Cat: Communication, CustomStringConvertible {
+    var description: String {
+        return message
+    }
+    var message: String {
+        return "Meow"
+    }
+}
+let cow = Cow() ; let dog = Dog() ; let cat = Cat()
+let animalArr = [cow,dog,cat] as [Any]
+for animal in animalArr {
+    print(animal)
+}
+```
 
 ## Question 6
 
 The HeartRateReceiver class below represents a very simplified example of a class dedicated to receiving information from fitness tracking hardware with monitoring heart rate. The function startHeartRateMonitoringExample will generate random heart rates and assign them to currentHR, simulating how an instance of HeartRateReceiver may pick up on new heart rate readings at specific intervals.
 
 HeartRateViewController below is a view controller that will present the heart rate information to the user. Throughout the exercises below you'll use the delegate pattern to pass information from an instance of HeartRateReceiver to the view controller so that anytime new information is obtained it is presented to the user.
-
+## Answer
 ```swift
+protocol HeartRateReceiverDelegate: AnyObject {
+    func heartRateUpdated(toBpm: Int)
+}
+
 class HeartRateReceiver {
+    weak var delegate: HeartRateReceiverDelegate?
+    
     var currentHR: Int? {
         didSet {
             if let currentHR = currentHR {
                 print("The most recent heart rate reading is \(currentHR).")
+                delegate?.heartRateUpdated(toBpm: currentHR)
             } else {
                 print("Looks like we can't pick up a heart rate.")
             }
@@ -249,9 +290,21 @@ class HeartRateReceiver {
     }
 }
 
-class HeartRateViewController: UIViewController {
+class HeartRateViewController: UIViewController, HeartRateReceiverDelegate {
+//    weak var delegate: HeartRateReceiverDelegate?
+    
+    func heartRateUpdated(toBpm: Int) {
+        if let validHeartRate = heartRateReceiver.currentHR {
+            heartRateLabel.text = "The User has been shown a heart rate of \(validHeartRate) "
+        }
+    }
+    
     var heartRateLabel: UILabel = UILabel()
 }
+let heartRateReceiver = HeartRateReceiver()
+let viewController = HeartRateViewController()
+heartRateReceiver.delegate = viewController
+heartRateReceiver.startHeartRateMonitoringExample()
 ```
 
 First, create an instance of HeartRateReceiver and call startHeartRateMonitoringExample. Notice that every two seconds currentHR get set and prints the new heart rate reading to the console.
