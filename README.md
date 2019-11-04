@@ -137,12 +137,31 @@ Give your structs some properties and have them conform to the appropriate proto
 
 ```swift
 protocol Bird {
- var name: String { get }
- var canFly: Bool { get }
+    var name: String { get }
+    var canFly: Bool { get }
 }
 
 protocol Flyable {
- var airspeedVelocity: Double { get }
+    var airspeedVelocity: Double { get }
+}
+struct Penguin: Bird {
+    var name: String {
+        return "Penguin"
+    }
+    var canFly: Bool {
+        return false
+    }
+}
+struct Eagle: Bird, Flyable {
+    var name: String {
+        return "Eagle"
+    }
+    var canFly: Bool {
+        return true
+    }
+    var airspeedVelocity: Double {
+        return 200
+    }
 }
 ```
 
@@ -156,10 +175,23 @@ b. Make an enum called `SuperHero` that conforms to `Transformation` with cases 
 
 c. Create an instance of it named `bruceBanner`. Make it so that when the transform function is called that bruceBanner turns from
 `.notHulk` to `.hulk.``
-
+## Answer
 ```swift
+protocol Transformation {
+    mutating func transform()
+}
 enum SuperHero: Transformation {
-    // write code here.
+    
+    case hulk
+    case notHulk
+    
+    mutating func transform() {
+        if self == .hulk {
+            self = .notHulk
+        } else {
+            self = .hulk
+        }
+    }
 }
 
 // Example Output:
